@@ -1,0 +1,40 @@
+# Locations list
+az account list-locations -o table
+
+
+
+Get-AzResourceProvider -ProviderNamespace "Microsoft.ApiManagement"
+
+# Create resource group
+New-AzResourceGroup -Name RG01 -Location "West Europe"
+
+#Create APIM
+New-AzApiManagement -Name "gs-apim" -ResourceGroupName "RG01" -Location "West Europe" -Organization "georgystefanov" -AdminEmail "georgy_stefanov@abv.bg" -Sku "Developer"
+  
+# Clean up resources
+Remove-AzResourceGroup -Name RG01
+
+Get-AzApiManagement -Name "gs-apim" -ResourceGroupName "RG01"
+
+
+https://github.com/JoroStef/Simple.Api.git
+
+# Replace the following URL with a public GitHub repo URL
+$gitrepo="https://github.com/JoroStef/Simple.Api.git"
+$webappname="webapp$(Get-Random)"
+$location="West Europe"
+$resourcegroup = "RG01"
+
+# Create an App Service plan in Free tier.
+New-AzAppServicePlan -Name $webappname -Location $location -ResourceGroupName $resourcegroup -Tier Free
+
+# Create a web app.
+New-AzWebApp -Name $webappname -Location $location -AppServicePlan $webappname -ResourceGroupName $resourcegroup
+
+# Configure GitHub deployment from your GitHub repo and deploy once.
+$PropertiesObject = @{
+    repoUrl = "$gitrepo";
+    branch = "master";
+    isManualIntegration = "true";
+}
+Set-AzResource -Properties $PropertiesObject -ResourceGroupName $resourcegroup -ResourceType Microsoft.Web/sites/sourcecontrols -ResourceName $webappname/web -ApiVersion 2015-08-01 -Force
