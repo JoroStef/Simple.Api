@@ -1,4 +1,4 @@
-namespace Simple.Api
+namespace Simple.Data.Models
 {
     public class WeatherForecast
     {

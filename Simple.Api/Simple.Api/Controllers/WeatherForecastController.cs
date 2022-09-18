@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Simple.Data;
+using Simple.Data.Models;
 
 namespace Simple.Api.Controllers
 {
@@ -12,22 +15,43 @@ namespace Simple.Api.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly SimpleDbContext dbContext;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, SimpleDbContext dbContext)
         {
             _logger = logger;
+            this.dbContext = dbContext;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IActionResult> GetAsync()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            try
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-25, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                var forecast = new WeatherForecast
+                {
+                    Date = DateTime.Now,
+                    TemperatureC = Random.Shared.Next(-25, 55),
+                    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+
+                };
+
+                var reccord = new WeatherForecastReccord()
+                {
+                    Forecast = JsonConvert.SerializeObject(forecast),
+                    CreatedOn = DateTime.Now.ToUniversalTime(),
+                };
+
+                var result = await this.dbContext.WeatherForecastReccords.AddAsync(reccord);
+                var result2 = await this.dbContext.SaveChangesAsync();
+
+                return Ok(forecast);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException?.Message);
+            }        
         }
     }
 }
