@@ -1,0 +1,50 @@
+https://learn.microsoft.com/en-us/azure/postgresql/single-server/tutorial-design-database-using-azure-cli
+https://learn.microsoft.com/en-us/azure/postgresql/single-server/tutorial-design-database-using-azure-portal
+
+pass = 123pG!321
+
+****************************
+$servername = "pgServer123456789"
+$Password = Read-Host -Prompt 'Please enter your password' -AsSecureString
+$resourcegroupname = "RG01"
+New-AzPostgreSqlServer -Name $servername -ResourceGroupName $resourcegroupname -Sku "B_Gen5_2" -Location "West Europe" -AdministratorUsername "myadmin" -AdministratorLoginPassword $Password
+
+New-AzPostgreSqlFirewallRule -Name AllowMyIP -ResourceGroupName $resourcegroupname -ServerName $servername -StartIPAddress 0.0.0.0 -EndIPAddress 0.0.0.0
+New-AzPostgreSqlFirewallRule -Name AllowMyLocalIP -ResourceGroupName $resourcegroupname -ServerName $servername -StartIPAddress 87.116.77.155 -EndIPAddress 87.116.77.155
+
+
+Get-AzPostgreSqlServer -Name $servername -ResourceGroupName $resourcegroupname |
+  Select-Object -Property FullyQualifiedDomainName, AdministratorLogin
+
+
+Remove-AzPostgreSqlServer -Name $servername -ResourceGroupName $resourcegroupname
+
+Name              Location   AdministratorLogin Version StorageProfileStorageMb SkuName  SkuTier SslEnforcement
+----              --------   ------------------ ------- ----------------------- -------  ------- --------------
+pgserver123456789 westeurope myadmin            9.6     5120                    B_Gen5_2 Basic   Enabled
+
+
+
+FullyQualifiedDomainName                      AdministratorLogin
+------------------------                      ------------------
+pgserver123456789.postgres.database.azure.com myadmin
+
+IP 13.69.105.208
+
+my IP: 87.116.77.155
+
+# Connect to database using Azure Cloud Console
+psql --host=pgserver123456789.postgres.database.azure.com --port=5432 --username=myadmin@pgserver123456789 --dbname=postgres
+
+
+# IMP: Does not accept double quotes
+
+CREATE DATABASE SimpleDb;
+
+CREATE TABLE WeatherForecastReccord (
+  Id uuid PRIMARY KEY, 
+  Forecast VARCHAR(50), 
+  CreatedOn INTEGER
+);
+
+Database=simpledb; Data Source=pgserver123456789.postgres.database.azure.com; User Id=myadmin@pgserver123456789; Password=123pG!321
