@@ -12,8 +12,8 @@ using Simple.Data;
 namespace Simple.Data.Migrations
 {
     [DbContext(typeof(SimpleDbContext))]
-    [Migration("20220918193206_MyFirstMigration")]
-    partial class MyFirstMigration
+    [Migration("20220919182211_First")]
+    partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
