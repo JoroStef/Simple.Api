@@ -41,10 +41,10 @@ psql --host=pgserver123456789.postgres.database.azure.com --port=5432 --username
 
 CREATE DATABASE SimpleDb;
 
-CREATE TABLE WeatherForecastReccord (
+CREATE TABLE WeatherForecastReccords (
   Id uuid PRIMARY KEY, 
-  Forecast VARCHAR(50), 
-  CreatedOn INTEGER
+  Forecast VARCHAR(200), 
+  CreatedOn TIMESTAMP
 );
 
 Database=simpledb; Data Source=pgserver123456789.postgres.database.azure.com; User Id=myadmin@pgserver123456789; Password=123pG!321
