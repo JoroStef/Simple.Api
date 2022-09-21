@@ -1,0 +1,60 @@
+
+Set-AzContext -SubscriptionId 223f43d1-8971-4c41-9ede-ffda50c91a04
+
+# *********************
+# Create resource group
+$location = "West Europe"
+$resourcegroup = "RG01"
+
+New-AzResourceGroup -Name $resourcegroup -Location $location
+
+# ***********
+# Create APIM
+$apimname = "gs-apim"
+$apimorg = "georgystefanov"
+$adminemail = "georgy_stefanov@abv.bg"
+$apimsku = "Developer"
+
+New-AzApiManagement -Name $apimname -ResourceGroupName $resourcegroup -Location $location -Organization $apimorg -AdminEmail "georgy_stefanov@abv.bg" -Sku $apimsku
+
+# **********************************************
+# https://learn.microsoft.com/en-us/azure/postgresql/single-server/quickstart-create-postgresql-server-database-using-azure-powershell
+# Create an Azure Database for PostgreSQL server
+# pass = 123pG!321 
+$Password = Read-Host -Prompt 'Please enter your password' -AsSecureString
+$servername = "gs-postgres"
+$sku = B_Gen5_1
+$adminusername = postgres-admin
+New-AzPostgreSqlServer -Name $servername -ResourceGroupName $resourcegroup -Sku $sku -GeoRedundantBackup Disabled -Location $location -AdministratorUsername $adminusername -AdministratorLoginPassword $Password
+
+# Configure a firewall rule
+New-AzPostgreSqlFirewallRule -Name AllowAzIPs -ResourceGroupName $resourcegroup -ServerName $servername -StartIPAddress 0.0.0.0 -EndIPAddress 0.0.0.0
+New-AzPostgreSqlFirewallRule -Name AllowMyIP -ResourceGroupName $resourcegroup -ServerName $servername -StartIPAddress 87.116.77.155 -EndIPAddress 87.116.77.155
+
+# OR
+New-AzPostgreSqlFirewallRule -Name AllowAllIPs -ResourceGroupName $resourcegroup -ServerName $servername -StartIPAddress 0.0.0.0 -EndIPAddress 255.255.255.255
+
+# connect to postgres
+$hostname = $servername + ".postgres.database.azure.com"
+$username = $adminusername + "@" + $servername
+psql --host=$hostname --port=5432 --username=$username --dbname=postgres
+
+# then you can create database and so on ....
+
+
+
+# ***
+# Create App Servise plan
+$servplanname = "gsASP"
+$webappname = "ContosoSite"
+New-AzAppServicePlan -ResourceGroupName $resourcegroup -Name $servplanname -Location $location -Tier "Free"
+New-AzWebApp -ResourceGroupName $resourcegroup -Name $webappname -Location $location -AppServicePlan $servplanname
+
+
+# ******************
+# Clean up resources
+Remove-AzResourceGroup -Name "RG01"
+
+Remove-AzApiManagement -ResourceGroupName "RG01" -Name "gs-apim"
+
+Remove-AzPostgreSqlServer -Name pgserver123456789 -ResourceGroupName RG01
