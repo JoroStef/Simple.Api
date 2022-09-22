@@ -53,5 +53,21 @@ namespace Simple.Api.Controllers
                 return BadRequest(ex.InnerException?.Message);
             }        
         }
+
+        [HttpGet(Name = "GetRandom")]
+        public async Task<IActionResult> GetRandomAsync()
+        {
+            try
+            {
+                var randomNumber = Random.Shared.Next(-100, 100);
+
+                return Ok(randomNumber);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
