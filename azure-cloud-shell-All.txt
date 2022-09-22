@@ -46,9 +46,10 @@ psql --host=$hostname --port=5432 --username=$username --dbname=postgres
 # ***
 # Create App Servise plan
 $servplanname = "gsASP"
-$webappname = "ContosoSite"
 New-AzAppServicePlan -ResourceGroupName $resourcegroup -Name $servplanname -Location $location -Tier "Free"
-New-AzWebApp -ResourceGroupName $resourcegroup -Name $webappname -Location $location -AppServicePlan $servplanname
+
+$webappname = "simple"+(Get-Random).toString()
+New-AzWebApp -ResourceGroupName $resourcegroup -Name $webappname -Location $location -AppServicePlan $servplanname -GitRepositoryPath https://github.com/JoroStef/Simple.Api.git
 
 
 # ******************
@@ -58,3 +59,12 @@ Remove-AzResourceGroup -Name "RG01"
 Remove-AzApiManagement -ResourceGroupName "RG01" -Name "gs-apim"
 
 Remove-AzPostgreSqlServer -Name pgserver123456789 -ResourceGroupName RG01
+
+
+
+# ************************
+# Deploy app to Azure
+
+# Create deployment user
+Set-AzWebApp -ResourceGroupName "RG01" -Name "simple1042869776" -AppServicePlan "ContosoPlan"
+
