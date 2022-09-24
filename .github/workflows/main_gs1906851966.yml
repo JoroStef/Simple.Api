@@ -19,7 +19,7 @@ jobs:
     steps:
 
       - name: "Say Hello Mona it's Monday"
-        run: echo "-> $env:WORKING_DIR"
+        run: echo "-> $env:GITHUB_PATH $env:WORKING_DIR"
 
       - uses: actions/checkout@v2
 
