@@ -8,6 +8,14 @@ $resourcegroup = "RG01"
 
 New-AzResourceGroup -Name $resourcegroup -Location $location
 
+# ***************************************
+# Create App Servise plan and App Service
+$servplanname = "gsASP"
+New-AzAppServicePlan -ResourceGroupName $resourcegroup -Name $servplanname -Location $location -Tier "Free"
+$webappname = "gs"+(Get-Random).toString()
+New-AzWebApp -ResourceGroupName $resourcegroup -Name $webappname -Location $location -AppServicePlan $servplanname
+
+
 # ***********
 # Create APIM
 $apimname = "gs-apim"
@@ -43,12 +51,7 @@ psql --host=$hostname --port=5432 --username=$username --dbname=postgres
 
 
 
-# ***
-# Create App Servise plan
-$servplanname = "gsASP"
-$webappname = "ContosoSite"
-New-AzAppServicePlan -ResourceGroupName $resourcegroup -Name $servplanname -Location $location -Tier "Free"
-New-AzWebApp -ResourceGroupName $resourcegroup -Name $webappname -Location $location -AppServicePlan $servplanname
+
 
 
 # ******************
