@@ -12,6 +12,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    
     env:
       WORKING_DIR: ./Simple.Api
       
@@ -26,11 +27,11 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        working-directory: ./Simple.Api
+        working-directory: $env:WORKING_DIR
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-        working-directory: ./Simple.Api
+        working-directory: $env:WORKING_DIR
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
