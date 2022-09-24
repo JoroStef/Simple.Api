@@ -13,13 +13,11 @@ jobs:
   build:
     runs-on: windows-latest
     
-    env:
-      WORKING_DIR: Simple.Api
+    defaults:
+      run:
+        working-directory: ./Simple.Api
     
     steps:
-
-      - name: "Say Hello Mona it's Monday"
-        run: echo "-> $env:GITHUB_PATH $env:WORKING_DIR"
 
       - uses: actions/checkout@v2
 
@@ -32,11 +30,9 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        working-directory: './$env:WORKING_DIR'
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-        working-directory: './$env:WORKING_DIR'
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
