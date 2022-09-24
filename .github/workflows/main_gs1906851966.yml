@@ -48,7 +48,7 @@ jobs:
 
     steps:      
       - name: Show deployment path
-        run: echo "-> $env.DEPLOYMENT_TARGET"
+        run: az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_APIM_RESOURCEGROPUP }} --settings DEPLOYMENT_TARGET="C:\home\site\wwwroot\simple.api"
         
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
