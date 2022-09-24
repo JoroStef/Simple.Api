@@ -16,6 +16,12 @@ $webappname = "gs"+(Get-Random).toString()
 New-AzWebApp -ResourceGroupName $resourcegroup -Name $webappname -Location $location -AppServicePlan $servplanname
 
 
+# ***
+# Configurations in Deployment Center
+
+
+
+
 # ***********
 # Create APIM
 $apimname = "gs-apim"
