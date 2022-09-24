@@ -57,7 +57,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'gs1906851966'
+          app-name: 'gs1906851966/simple.api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F83D381E3DA8440B97C1FE5522A14E6C }}
           package: .
