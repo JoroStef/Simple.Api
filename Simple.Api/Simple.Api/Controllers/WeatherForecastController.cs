@@ -12,7 +12,7 @@ namespace Simple.Api.Controllers
         private static readonly string[] Summaries = new[]
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+        };
 
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly SimpleDbContext dbContext;
@@ -23,7 +23,7 @@ namespace Simple.Api.Controllers
             this.dbContext = dbContext;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet("GetWeatherForecast")]
         public async Task<IActionResult> GetAsync()
         {
             try
@@ -52,6 +52,22 @@ namespace Simple.Api.Controllers
             {
                 return BadRequest(ex.InnerException?.Message);
             }        
+        }
+
+        [HttpGet("Random")]
+        public async Task<IActionResult> GetRandomAsync()
+        {
+            try
+            {
+                var randomNumber = Random.Shared.Next(-100, 100);
+
+                return Ok(randomNumber);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

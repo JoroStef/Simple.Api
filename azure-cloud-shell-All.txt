@@ -53,6 +53,9 @@ psql --host=$hostname --port=5432 --username=$username --dbname=postgres
 
 
 
+$webappname = "simple"+(Get-Random).toString()
+New-AzWebApp -ResourceGroupName $resourcegroup -Name $webappname -Location $location -AppServicePlan $servplanname -GitRepositoryPath https://github.com/JoroStef/Simple.Api.git
+
 
 # ******************
 # Clean up resources
@@ -61,3 +64,25 @@ Remove-AzResourceGroup -Name "RG01"
 Remove-AzApiManagement -ResourceGroupName "RG01" -Name "gs-apim"
 
 Remove-AzPostgreSqlServer -Name pgserver123456789 -ResourceGroupName RG01
+
+
+
+# ************************
+# Deploy app to Azure
+
+$PropertiesObject = @{
+    scmType = "LocalGit";
+}
+
+Set-AzResource -PropertyObject $PropertiesObject -ResourceGroupName "RG01" -ResourceType Microsoft.Web/sites/config -ResourceName simple1042869776/web `
+-ApiVersion 2015-08-01 -Force
+
+# In the root of local repo
+git remote add azure https://simple1042869776.scm.azurewebsites.net/simple1042869776.git
+git push azure main:master
+
+# Authrnticate with user-scope credentials (in Web App service -> Deployment center -> FTPS credentials)
+# pass: !Passw0rd
+
+
+
