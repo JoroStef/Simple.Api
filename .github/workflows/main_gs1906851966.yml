@@ -46,12 +46,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
-    steps:
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.xxx }}
-      
+    steps:      
       - name: Show deployment path
         run: echo "-> ${{ env.DEPLOYMENT_TARGET }}"
         
@@ -64,7 +59,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'gs1906851966/simple.api'
+          app-name: 'gs1906851966'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F83D381E3DA8440B97C1FE5522A14E6C }}
           package: .
