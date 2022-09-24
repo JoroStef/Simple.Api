@@ -47,6 +47,11 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.xxx }}
+      
       - name: Show deployment path
         run: echo "-> ${{ env.DEPLOYMENT_TARGET }}"
         
