@@ -8,7 +8,7 @@ on:
     branches:
       - main
   workflow_dispatch:
-
+      
 jobs:
   build:
     runs-on: windows-latest
@@ -17,6 +17,10 @@ jobs:
       WORKING_DIR: ./Simple.Api
     
     steps:
+
+      - name: "Say Hello Mona it's Monday"
+        run: echo "-> ${env.WORKING_DIR}"
+
       - uses: actions/checkout@v2
 
       - name: Set up .NET Core
@@ -25,9 +29,7 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
-      - name: "Say Hello Mona it's Monday"
-        run: echo "-> ${env:WORKING_DIR}"
-      
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
         working-directory: ${env:WORKING_DIR}
