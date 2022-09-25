@@ -8,14 +8,17 @@ on:
     branches:
       - main
   workflow_dispatch:
-
+      
 jobs:
   build:
     runs-on: windows-latest
-    env:
-      WORKING_DIR: ./Simple.Api
-      
+    
+    defaults:
+      run:
+        working-directory: ./Simple.Api
+    
     steps:
+
       - uses: actions/checkout@v2
 
       - name: Set up .NET Core
@@ -26,11 +29,9 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        working-directory: ./Simple.Api
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-        working-directory: ./Simple.Api
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -45,7 +46,18 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
-    steps:
+    steps:      
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Modify deployment target fro WebApp
+        run: az webapp config appsettings set --name 'gs1906851966' --resource-group 'RG01' --settings DEPLOYMNET_TARGET='c:\home\site\wwwroot\simple.api'
+      - name: Restart WebApp after re-config
+        run: az webapp restart --name 'gs1906851966' --resource-group 'RG01'
+      - name: Logout from Azure
+        run: az logout
+        
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
