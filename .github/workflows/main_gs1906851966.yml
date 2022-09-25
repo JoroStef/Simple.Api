@@ -47,8 +47,10 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:      
-      - name: Show deployment path
-        run: az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_APIM_RESOURCEGROPUP }} --settings DEPLOYMENT_TARGET="C:\home\site\wwwroot\simple.api"
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_SP_PASSWORD }}
         
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
