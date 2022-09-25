@@ -51,6 +51,12 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Modify deployment target fro WebApp
+        run: az webapp config appsettings set --name 'gs1906851966' --resource-group 'RG01' --settings DEPLOYMNET_TARGET='\site\wwwroot\simple.api'
+      - name: Restart WebApp after re-config
+        run: az webapp restart --name 'gs1906851966' --resource-group 'RG01'
+      - name: Logout from Azure
+        run: az logout
         
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
