@@ -50,6 +50,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
+          enable-AzPSSession: true
           creds: ${{ secrets.AZURE_SP_PASSWORD }}
         
       - name: Download artifact from build job
