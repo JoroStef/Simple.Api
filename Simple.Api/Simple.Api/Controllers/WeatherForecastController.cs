@@ -1,3 +1,4 @@
+using LiteDB;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Simple.Data;
@@ -42,8 +43,10 @@ namespace Simple.Api.Controllers
                     CreatedOn = DateTime.Now.ToUniversalTime(),
                 };
 
-                var result = await this.dbContext.WeatherForecastReccords.AddAsync(reccord);
-                var result2 = await this.dbContext.SaveChangesAsync();
+                //var result = await this.dbContext.WeatherForecastReccords.AddAsync(reccord);
+                //var result2 = await this.dbContext.SaveChangesAsync();
+
+                var newId = this.SaveInLiteDb(forecast);
 
                 return Ok(forecast);
 
@@ -52,6 +55,19 @@ namespace Simple.Api.Controllers
             {
                 return BadRequest(ex.InnerException?.Message);
             }        
+        }
+
+        private int SaveInLiteDb(WeatherForecast forecast)
+        {
+            using (var db = new LiteDatabase(@"C:\dev\Simple.Api\Simple.Api\Simple.Api\LiteDb\SimpleData.db"))
+            {
+                // Get a collection (or create, if doesn't exist)
+                var col = db.GetCollection<WeatherForecast>("forecasts");
+
+                col.Insert(forecast);
+
+                return forecast.Id;
+            }
         }
 
         [HttpGet("Random")]
@@ -69,5 +85,7 @@ namespace Simple.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        
     }
 }

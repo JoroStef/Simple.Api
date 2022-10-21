@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simple.Api", "Simple.Api\Simple.Api.csproj", "{AFB8AC45-C70A-4DB4-B720-8574026EC3CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data", "Simple.Data\Simple.Data.csproj", "{8288E954-E244-4CEB-AF42-8B1C1145F3B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simple.Data", "Simple.Data\Simple.Data.csproj", "{8288E954-E244-4CEB-AF42-8B1C1145F3B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
