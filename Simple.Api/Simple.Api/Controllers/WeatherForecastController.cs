@@ -24,49 +24,52 @@ namespace Simple.Api.Controllers
             this.dbContext = dbContext;
         }
 
-        [HttpGet("GetWeatherForecast")]
-        public async Task<IActionResult> GetAsync()
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync([FromBody] WeatherForecast weatherForecast)
         {
             try
             {
-                var forecast = new WeatherForecast
-                {
-                    Date = DateTime.Now,
-                    TemperatureC = Random.Shared.Next(-25, 55),
-                    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                //var forecast = new WeatherForecast
+                //{
+                //    Date = DateTime.Now,
+                //    TemperatureC = Random.Shared.Next(-25, 55),
+                //    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
 
-                };
+                //};
 
-                var reccord = new WeatherForecastReccord()
-                {
-                    Forecast = JsonConvert.SerializeObject(forecast),
-                    CreatedOn = DateTime.Now.ToUniversalTime(),
-                };
+                //var reccord = new WeatherForecastReccord()
+                //{
+                //    Forecast = JsonConvert.SerializeObject(forecast),
+                //    CreatedOn = DateTime.Now.ToUniversalTime(),
+                //};
 
                 //var result = await this.dbContext.WeatherForecastReccords.AddAsync(reccord);
                 //var result2 = await this.dbContext.SaveChangesAsync();
 
-                var newId = this.SaveInLiteDb(forecast);
+                weatherForecast.Date = DateTime.Today;
 
-                return Ok(forecast);
+                var newId = this.SaveInLiteDb(weatherForecast);
+
+                return Ok(newId);
 
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException?.Message);
+                return BadRequest(ex.Message);
             }        
         }
 
-        private int SaveInLiteDb(WeatherForecast forecast)
+        private int SaveInLiteDb(WeatherForecast weatherforecast)
         {
-            using (var db = new LiteDatabase(@"C:\dev\Simple.Api\Simple.Api\Simple.Api\LiteDb\SimpleData.db"))
+            var connectionString = Directory.GetCurrentDirectory() + "\\LiteDb\\SimpleData.db";
+            using (var db = new LiteDatabase(connectionString))
             {
                 // Get a collection (or create, if doesn't exist)
-                var col = db.GetCollection<WeatherForecast>("forecasts");
+                var col = db.GetCollection<WeatherForecast>("weatherforecasts");
 
-                col.Insert(forecast);
+                col.Insert(weatherforecast);
 
-                return forecast.Id;
+                return weatherforecast.Id;
             }
         }
 
