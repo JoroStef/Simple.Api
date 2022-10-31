@@ -4,9 +4,6 @@ namespace Simple.Data.Models
 {
     public class WeatherForecast
     {
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
-
         [JsonPropertyName("p-date")]
         public DateTime Date { get; set; }
 

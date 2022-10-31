@@ -1,6 +1,7 @@
 using LiteDB;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Simple.Api.Services;
 using Simple.Data;
 using Simple.Data.Models;
 
@@ -15,43 +16,26 @@ namespace Simple.Api.Controllers
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
+        private readonly string dbCollection = "weatherforecasts";
         private readonly ILogger<WeatherForecastController> _logger;
-        private readonly SimpleDbContext dbContext;
+        private readonly IGenericService genericService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, SimpleDbContext dbContext)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IGenericService genericService)
         {
             _logger = logger;
-            this.dbContext = dbContext;
+            this.genericService = genericService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] WeatherForecast weatherForecast)
+        public IActionResult Create([FromBody] WeatherForecast weatherForecast)
         {
             try
             {
-                //var forecast = new WeatherForecast
-                //{
-                //    Date = DateTime.Now,
-                //    TemperatureC = Random.Shared.Next(-25, 55),
-                //    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                weatherForecast.Date = DateTime.Now;
 
-                //};
+                this.genericService.SaveInLiteDb<WeatherForecast>(weatherForecast, this.dbCollection);
 
-                //var reccord = new WeatherForecastReccord()
-                //{
-                //    Forecast = JsonConvert.SerializeObject(forecast),
-                //    CreatedOn = DateTime.Now.ToUniversalTime(),
-                //};
-
-                //var result = await this.dbContext.WeatherForecastReccords.AddAsync(reccord);
-                //var result2 = await this.dbContext.SaveChangesAsync();
-
-                weatherForecast.Date = DateTime.Today;
-
-                var newId = this.SaveInLiteDb(weatherForecast);
-
-                return Ok(newId);
-
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -59,19 +43,24 @@ namespace Simple.Api.Controllers
             }        
         }
 
-        private int SaveInLiteDb(WeatherForecast weatherforecast)
+        [HttpGet]
+        public IActionResult Read([FromBody] int[] ids)
         {
-            var connectionString = Directory.GetCurrentDirectory() + "\\LiteDb\\SimpleData.db";
-            using (var db = new LiteDatabase(connectionString))
+            try
             {
-                // Get a collection (or create, if doesn't exist)
-                var col = db.GetCollection<WeatherForecast>("weatherforecasts");
 
-                col.Insert(weatherforecast);
+                var items = this.genericService.GetFromLiteDb<WeatherForecast>(ids, this.dbCollection);
 
-                return weatherforecast.Id;
+                return Ok(items);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
+
+
+
 
         [HttpGet("Random")]
         public async Task<IActionResult> GetRandomAsync()
